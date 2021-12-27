@@ -1,0 +1,38 @@
+from django.db.models.query import QuerySet
+from django.http import JsonResponse, HttpResponse
+from django.http.response import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.parsers import JSONParser
+from rest_framework.decorators import api_view
+from rest_framework.serializers import Serializer
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework import generics
+from rest_framework import mixins
+
+from .models import *
+from. serializers import *
+
+# @csrf_exempt
+
+# def protein_detail(request, pk):
+#     try:
+#         protein = Protein.objects.get(pk=pk)
+#     except Protein.DoesNotExist:
+#         return HttpResponse(status=404)
+#     if request.method == 'GET':
+#         serializer = ProteinSerializer(protein)
+#         return JsonResponse(serializer.data)
+
+# class ProteinList(generics.ListAPIView):
+#     queryset = Protein.objects.all()
+#     serializer_class = ProteinSerializer
+
+class ProteinDetails(mixins.RetrieveModelMixin,
+                     generics.GenericAPIView):
+    queryset = Protein.objects.all()
+    serializer_class = ProteinSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
