@@ -19,22 +19,28 @@ sequences_data_file =  '/home/philgreening/AWD_Midterm/proteinAPI/data/assignmen
 pfam_desc_data_file = '/home/philgreening/AWD_Midterm/proteinAPI/data/pfam_descriptions.csv'
 protein_dataset_file = '/home/philgreening/AWD_Midterm/proteinAPI/data/assignment_data_set.csv'
 
-sequencing = defaultdict(list)
-pfam_descriptions = defaultdict(list)
+#sequencing = defaultdict(list)
+sequencing = set() 
+# pfam_descriptions = defaultdict(list)
+pfam_descriptions = set()
 proteins = defaultdict(list)
 
 with open(sequences_data_file) as csv_file:
        csv_reader = csv.reader(csv_file, delimiter=',')
        for row in csv_reader:
-              sequencing[row[0]] = row[0+1]
+              #sequencing[row[0]] = row[0+1]
+              sequencing.add((row[0], row[1]))
+
 
 with open(pfam_desc_data_file) as csv_file:
        csv_reader = csv.reader(csv_file, delimiter=',')
        for row in csv_reader:
-              pfam_descriptions[row[0]] = row[0+1]
+              # pfam_descriptions[row[0]] = row[0+1]
+              pfam_descriptions.add((row[0], row[1]))
 
 with open(protein_dataset_file) as csv_file:
        csv_reader = csv.reader(csv_file, delimiter=',')
+       c = 0
        for row in csv_reader:
               #if ' ' in row[3]:
               row[3:4] = row[3].split(' ', maxsplit=1)
@@ -42,9 +48,11 @@ with open(protein_dataset_file) as csv_file:
               #        tupple = org.split(" ")
               #        proteins[row[3]][tupple[0]] = tupple[1]
               proteins[row[0]] = row[0:10]
+              c += 1
        print(row[3])
        print(row[4])
        print(proteins[row[0]])
+       print(c)
 
 
 Protein.objects.all().delete()
@@ -60,39 +68,68 @@ sequencing_row = {}
 pfam_desc_row = {}
 protein_row = {}
 
-for protein_id, sequence, in sequencing.items():
-       row = Sequencing.objects.create(protein_id = protein_id, sequence = sequence)
-       #  row = Sequencing.objects.bulk_create(protein_id, sequence = sequence)
-       row.save()
-       sequencing_row[protein_id] = row
-       #print(protein_row[protein_id])
-#print(sequencing_row)
+# for protein_id, sequence, in sequencing.items():
+#        row = Sequencing.objects.create(protein_id = protein_id, sequence = sequence)
+#        #  row = Sequencing.objects.bulk_create(protein_id, sequence = sequence)
+#        row.save()
+#        sequencing_row[protein_id] = row
+#        #print(protein_row[protein_id])
+# #print(sequencing_row)
 
-for domain_id, pfam_desc, in pfam_descriptions.items():
-       row = PfamDescriptions.objects.create(domain_id = domain_id, pfam_desc = pfam_desc)
+for seq in sequencing:
+       row = Sequencing.objects.create(protein_id = seq[0], sequence = seq[1])
        row.save()
-       pfam_desc_row[domain_id] = row
+       sequencing_row[seq[0]] = row
+       # print(row)
+
+
+# for domain_id, pfam_desc, in pfam_descriptions.items():
+#        row = PfamDescriptions.objects.create(domain_id = domain_id, pfam_desc = pfam_desc)
+#        row.save()
+#        pfam_desc_row[domain_id] = row
+#        # print(pfam_desc_row[pfam_id])
+
+for entry in pfam_descriptions:
+       row = PfamDescriptions.objects.create(domain_id = entry[0], pfam_desc = entry[1])
+       row.save()
+       pfam_desc_row[entry[0]] = row
        # print(pfam_desc_row[pfam_id])
 
 for protein_id, data in proteins.items():
-      # print(data[7])
-       row = Protein.objects.create(protein_id = protein_id,
-                                    sequence = sequencing_row[protein_id],
-                                    org_taxa_id = data[1],
-                                    org_clade = data[2],
-                                    org_genus = data[3],
-                                    org_species = data[4],
-                                    domain_id = data[6],
-                                    pfam_desc = pfam_desc_row[domain_id], 
-                                    domain_desc = data[5],
-                                    domain_start_coord = data[7],
-                                    domain_end_coord = data[8],
-                                    protein_length = data[9] 
-                                    )
-                                    
+       try:
+              row = Protein.objects.create(protein_id = protein_id,
+                            sequence = sequencing_row[protein_id],
+                            org_taxa_id = data[1],
+                            org_clade = data[2],
+                            org_genus = data[3],
+                            org_species = data[4],
+                            domain_id = data[6],
+                            pfam_desc = pfam_desc_row[data[6]], 
+                            domain_desc = data[5],
+                            domain_start_coord = data[7],
+                            domain_end_coord = data[8],
+                            protein_length = data[9] 
+                            )
+              #row.save()
+       except KeyError:
+              # print(protein_id + " : " + "No sequence matched")
+              # row.sequence = None
+              row = Protein.objects.create(protein_id = protein_id,
+                            sequence = None,
+                            org_taxa_id = data[1],
+                            org_clade = data[2],
+                            org_genus = data[3],
+                            org_species = data[4],
+                            domain_id = data[6],
+                            pfam_desc = pfam_desc_row[data[6]], 
+                            domain_desc = data[5],
+                            domain_start_coord = data[7],
+                            domain_end_coord = data[8],
+                            protein_length = data[9] 
+                            )
        row.save()
-       #print(row[0])
-       # protein_row[data] = row 
+
+
 
 
 # data_file = '/home/coder/project/topic2/scripts/example_data_to_load.csv'
