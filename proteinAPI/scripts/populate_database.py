@@ -58,6 +58,8 @@ with open(protein_dataset_file) as csv_file:
 Protein.objects.all().delete()
 Sequencing.objects.all().delete()
 PfamDescriptions.objects.all().delete()
+Organism.objects.all().delete()
+Domain.objects.all().delete()
 
 
 # for entry in sequencing:
@@ -66,6 +68,8 @@ PfamDescriptions.objects.all().delete()
 
 sequencing_row = {}
 pfam_desc_row = {}
+domain_row = {}
+organism_row = {}
 protein_row = {}
 
 # for protein_id, sequence, in sequencing.items():
@@ -97,39 +101,64 @@ for entry in pfam_descriptions:
 
 for protein_id, data in proteins.items():
        try:
+              # row = Protein.objects.create(protein_id = protein_id,
+              #               sequence = sequencing_row[protein_id],
+              #               org_taxa_id = data[1],
+              #               org_clade = data[2],
+              #               org_genus = data[3],
+              #               org_species = data[4],
+              #               domain_id = data[6],
+              #               pfam_desc = pfam_desc_row[data[6]], 
+              #               domain_desc = data[5],
+              #               domain_start_coord = data[7],
+              #               domain_end_coord = data[8],
+              #               protein_length = data[9] 
+              #               )
               row = Protein.objects.create(protein_id = protein_id,
                             sequence = sequencing_row[protein_id],
-                            org_taxa_id = data[1],
-                            org_clade = data[2],
-                            org_genus = data[3],
-                            org_species = data[4],
-                            domain_id = data[6],
-                            pfam_desc = pfam_desc_row[data[6]], 
-                            domain_desc = data[5],
-                            domain_start_coord = data[7],
-                            domain_end_coord = data[8],
                             protein_length = data[9] 
                             )
+
               #row.save()
        except KeyError:
               # print(protein_id + " : " + "No sequence matched")
               # row.sequence = None
+              # row = Protein.objects.create(protein_id = protein_id,
+              #               sequence = None,
+              #               org_taxa_id = data[1],
+              #               org_clade = data[2],
+              #               org_genus = data[3],
+              #               org_species = data[4],
+              #               domain_id = data[6],
+              #               pfam_desc = pfam_desc_row[data[6]], 
+              #               domain_desc = data[5],
+              #               domain_start_coord = data[7],
+              #               domain_end_coord = data[8],
+              #               protein_length = data[9] 
+              #               )
               row = Protein.objects.create(protein_id = protein_id,
                             sequence = None,
-                            org_taxa_id = data[1],
-                            org_clade = data[2],
-                            org_genus = data[3],
-                            org_species = data[4],
-                            domain_id = data[6],
-                            pfam_desc = pfam_desc_row[data[6]], 
-                            domain_desc = data[5],
-                            domain_start_coord = data[7],
-                            domain_end_coord = data[8],
                             protein_length = data[9] 
                             )
        row.save()
 
+for protein_id, data in proteins.items():
+       row = Organism.objects.create(protein_id = protein_id,
+                            org_taxa_id = data[1],
+                            org_clade = data[2],
+                            org_genus = data[3],
+                            org_species = data[4],
+                            )
+       row.save()
 
+for protein_id, data in proteins.items():
+       row = Domain.objects.create(protein_id = protein_id,
+                            domain_id = data[6],
+                            domain_desc = data[5],
+                            domain_start_coord = data[7],
+                            domain_end_coord = data[8],
+                            )
+       row.save()
 
 
 # data_file = '/home/coder/project/topic2/scripts/example_data_to_load.csv'
