@@ -1,3 +1,4 @@
+from typing import Sequence
 from django.db.models.query import QuerySet
 from django.http import JsonResponse, HttpResponse
 from django.http.response import HttpResponse
@@ -28,9 +29,27 @@ from. serializers import *
 #     queryset = Protein.objects.all()
 #     serializer_class = ProteinSerializer
 
+class SequencingDetails(mixins.RetrieveModelMixin,
+              generics.GenericAPIView):
+    queryset = Sequencing.objects.all()
+    serializer_class = SequencingSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+class PfamDetails(mixins.RetrieveModelMixin,
+              generics.GenericAPIView):
+    queryset = PfamDescriptions.objects.all()
+    serializer_class = PfamSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+
 class ProteinDetails(mixins.RetrieveModelMixin,
                      generics.GenericAPIView):
     queryset = Protein.objects.all()
+    lookup_field = 'protein_id'
     serializer_class = ProteinSerializer
 
     def get(self, request, *args, **kwargs):

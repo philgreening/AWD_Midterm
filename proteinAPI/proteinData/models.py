@@ -35,3 +35,11 @@ class Protein(models.Model):
 
     def __str__(self):
         return self.protein_id
+
+# class Protein(models.Model):
+#     protein_id = models.CharField(max_length=10, null=False, blank=False)
+#     sequence = models.ForeignKey(Sequencing, null=True, blank= True, on_delete=models.DO_NOTHING)
+#     protein_length = models.IntegerField(null=False, blank=False)
+    
+#     def __str__(self):
+#         return self.protein_id
