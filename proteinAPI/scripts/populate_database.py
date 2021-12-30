@@ -81,7 +81,8 @@ protein_row = {}
 # #print(sequencing_row)
 
 for seq in sequencing:
-       row = Sequencing.objects.create(protein_id = seq[0], sequence = seq[1])
+       row = Sequencing.objects.create(protein_id = seq[0],
+                                       sequence = seq[1])
        row.save()
        sequencing_row[seq[0]] = row
        # print(row)
@@ -94,10 +95,20 @@ for seq in sequencing:
 #        # print(pfam_desc_row[pfam_id])
 
 for entry in pfam_descriptions:
-       row = PfamDescriptions.objects.create(domain_id = entry[0], pfam_desc = entry[1])
+       row = PfamDescriptions.objects.create(domain_id = entry[0],
+                                             domain_description = entry[1])
        row.save()
        pfam_desc_row[entry[0]] = row
        # print(pfam_desc_row[pfam_id])
+
+for protein_id, data in proteins.items():
+       row = Organism.objects.create(protein_id = protein_id,
+                                     taxa_id = data[1],
+                                     clade = data[2],
+                                     genus = data[3],
+                                     species = data[4])
+       row.save()
+       organism_row[protein_id] = row
 
 for protein_id, data in proteins.items():
        try:
@@ -115,9 +126,9 @@ for protein_id, data in proteins.items():
               #               protein_length = data[9] 
               #               )
               row = Protein.objects.create(protein_id = protein_id,
-                            sequence = sequencing_row[protein_id],
-                            protein_length = data[9] 
-                            )
+                                           taxonomy = organism_row[protein_id],
+                                           sequence = sequencing_row[protein_id],
+                                           length = data[9])
 
               #row.save()
        except KeyError:
@@ -137,27 +148,22 @@ for protein_id, data in proteins.items():
               #               protein_length = data[9] 
               #               )
               row = Protein.objects.create(protein_id = protein_id,
-                            sequence = None,
-                            protein_length = data[9] 
-                            )
+                                           taxonomy = organism_row[protein_id],
+                                           sequence = None,
+                                           length = data[9])
        row.save()
+       protein_row[protein_id] = row
+
+
+
 
 for protein_id, data in proteins.items():
-       row = Organism.objects.create(protein_id = protein_id,
-                            org_taxa_id = data[1],
-                            org_clade = data[2],
-                            org_genus = data[3],
-                            org_species = data[4],
-                            )
-       row.save()
-
-for protein_id, data in proteins.items():
-       row = Domain.objects.create(protein_id = protein_id,
-                            domain_id = data[6],
-                            domain_desc = data[5],
-                            domain_start_coord = data[7],
-                            domain_end_coord = data[8],
-                            )
+       row = Domain.objects.create(protein_id = protein_row[protein_id],
+                                   pfam_id = pfam_desc_row[data[6]], 
+                                   domain_id = data[6],
+                                   description = data[5],
+                                   start = data[7],
+                                   end = data[8])
        row.save()
 
 

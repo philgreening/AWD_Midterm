@@ -1,4 +1,3 @@
-from django.db.models import fields
 from rest_framework import serializers
 from .models import *
 
@@ -10,50 +9,34 @@ class SequencingSerializer(serializers.ModelSerializer):
 class PfamSerializer(serializers.ModelSerializer):
     class Meta:
         model = PfamDescriptions
-        fields = ['id', 'domain_id', 'pfam_desc']
-
-class DomainSerailizer(serializers.ModelSerializer):
-    class Meta:
-        model = Protein
-        fields = ['protein_id', 'org_taxa_id', 'org_clade', 'org_genus','org_species']
+        fields = ['id', 'domain_id', 'domain_description']
 
 class OrganismSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organism
-        fields = ['protein_id', 
-                  'domain_id', 'domain_desc',
-                  'domain_start_coord', 'domain_end_coord',
-                 ]
+        fields = ['protein_id', 'taxa_id', 'clade', 'genus', 'species']
 
-# class ProteinSerializer(serializers.ModelSerializer):
-#     sequence = serializers.SlugRelatedField(read_only = True, slug_field='sequence')
-#     pfam_desc = serializers.SlugRelatedField(read_only = True, slug_field='pfam_desc')
-#     #org_genus = domainSerailizer()
-#    # pfam_desc = PfamSerializer()
-#     class Meta:
-#         model = Protein
-#        # lookup_field = 'protein_id'
-#         fields = ['id', 'protein_id', 'sequence', 'org_taxa_id',
-#                  'org_clade', 'org_genus', 'org_species',
-#                  'domain_id', 'pfam_desc', 'domain_desc',
-#                  'domain_start_coord', 'domain_end_coord',
-#                  'protein_length']
-#         # fields = ['id', 'protein_id', 'sequence',
-#         #          'domain_id', 'pfam_desc', 'pfam_desc','domain_desc',
-#         #          'domain_start_coord', 'domain_end_coord',
-#         #          'protein_length']
+class DomainSerializer(serializers.ModelSerializer):
+    pfam_id = PfamSerializer()
+
+    class Meta:
+        model = Domain
+        fields = ['pfam_id','protein_id', 
+                  'domain_id', 'description',
+                  'start', 'end',
+                 ]
 
 class ProteinSerializer(serializers.ModelSerializer):
     sequence = serializers.SlugRelatedField(read_only = True, slug_field='sequence')
-    #pfam_desc = serializers.SlugRelatedField(read_only = True, slug_field='pfam_desc')
-    organism = OrganismSerializer(many = False, read_only = True)
-   # pfam_desc = PfamSerializer()
+    taxonomy = OrganismSerializer()
+    domains = DomainSerializer(many = True)
+
     class Meta:
         model = Protein
-       # lookup_field = 'protein_id'
-        fields = ['id', 'protein_id', 'sequence', 'organism',
-                 'protein_length']
-        # fields = ['id', 'protein_id', 'sequence',
-        #          'domain_id', 'pfam_desc', 'pfam_desc','domain_desc',
-        #          'domain_start_coord', 'domain_end_coord',
-        #          'protein_length']
+        fields = ['id', 'protein_id', 'sequence', 'taxonomy',
+                 'length', 'domains']
+
+class ProteinListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organism
+        fields = ['id', 'protein_id']

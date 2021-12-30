@@ -40,13 +40,14 @@ class SequencingDetails(mixins.RetrieveModelMixin,
 class PfamDetails(mixins.RetrieveModelMixin,
               generics.GenericAPIView):
     queryset = PfamDescriptions.objects.all()
+    lookup_field = 'domain_id'
     serializer_class = PfamSerializer
 
     def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
+        return self.retrieve(request, *args, **kwargs)    
 
 class ProteinDetails(mixins.RetrieveModelMixin,
+                     mixins.CreateModelMixin,
                      generics.GenericAPIView):
     queryset = Protein.objects.all()
     lookup_field = 'protein_id'
@@ -54,4 +55,14 @@ class ProteinDetails(mixins.RetrieveModelMixin,
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+class ProteinList(mixins.RetrieveModelMixin,
+                  generics.ListAPIView):
+    queryset = Organism.objects.all()
+    lookup_field = 'taxa_id'
+    serializer_class = ProteinListSerializer
+
 

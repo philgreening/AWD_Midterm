@@ -10,23 +10,24 @@ from .models import *
 
 class ProteinAdmin(admin.ModelAdmin):
     list_display = ['protein_id', 'sequence',
-                 'protein_length'] 
+                    'length'
+                   ] 
 
 class SequencingAdmin(admin.ModelAdmin):
     list_display = ['protein_id', 'sequence']
 
 class PfamDescriptionsAdmin(admin.ModelAdmin):
-    list_display = ['domain_id', 'pfam_desc']
+    list_display = ['domain_id', 'domain_description']
 
 class OrganismAdmin(admin.ModelAdmin):
-    list_display = ['protein_id', 'org_taxa_id',
-                    'org_clade', 'org_genus', 'org_species',
+    list_display = ['protein_id', 'taxa_id',
+                    'clade', 'genus', 'species',
                     ]
 
 class DomainAdmin(admin.ModelAdmin):
     list_display = ['protein_id', 
-                    'domain_id', 'domain_desc',
-                    'domain_start_coord', 'domain_end_coord',
+                    'domain_id', 'description',
+                    'start', 'end',
                    ]
 
 admin.site.register(Protein, ProteinAdmin)
