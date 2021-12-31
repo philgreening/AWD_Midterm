@@ -9,7 +9,7 @@ from .models import *
 #                  'protein_length']
 
 class ProteinAdmin(admin.ModelAdmin):
-    list_display = ['protein_id', 'sequence',
+    list_display = ['protein_id', 'sequence', 'taxonomy',
                     'length'
                    ] 
 
@@ -17,7 +17,7 @@ class SequencingAdmin(admin.ModelAdmin):
     list_display = ['protein_id', 'sequence']
 
 class PfamDescriptionsAdmin(admin.ModelAdmin):
-    list_display = ['domain_id', 'domain_description']
+    list_display = ['id', 'domain_description']
 
 class OrganismAdmin(admin.ModelAdmin):
     list_display = ['protein_id', 'taxa_id',
@@ -25,7 +25,7 @@ class OrganismAdmin(admin.ModelAdmin):
                     ]
 
 class DomainAdmin(admin.ModelAdmin):
-    list_display = ['protein_id', 
+    list_display = ['protein_id', 'taxa_id', 'pfam_id',
                     'domain_id', 'description',
                     'start', 'end',
                    ]

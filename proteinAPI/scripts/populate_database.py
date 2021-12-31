@@ -159,6 +159,7 @@ for protein_id, data in proteins.items():
 
 for protein_id, data in proteins.items():
        row = Domain.objects.create(protein_id = protein_row[protein_id],
+                                   taxa_id = organism_row[protein_id],
                                    pfam_id = pfam_desc_row[data[6]], 
                                    domain_id = data[6],
                                    description = data[5],

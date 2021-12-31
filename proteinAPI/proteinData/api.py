@@ -1,6 +1,6 @@
 from typing import Sequence
 from django.db.models.query import QuerySet
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, request
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
@@ -61,8 +61,26 @@ class ProteinDetails(mixins.RetrieveModelMixin,
 
 class ProteinList(mixins.RetrieveModelMixin,
                   generics.ListAPIView):
-    queryset = Organism.objects.all()
+    #queryset = Organism.objects.filter(taxa_id__exact = )
     lookup_field = 'taxa_id'
     serializer_class = ProteinListSerializer
+
+    def get_queryset(self):
+        taxa_id = self.kwargs['taxa_id']
+        return Organism.objects.filter(taxa_id = taxa_id)
+
+class PfamList(mixins.RetrieveModelMixin,
+                  generics.ListAPIView):
+    #queryset = Domain.objects.all()
+    lookup_field = 'taxa_id'
+    serializer_class = PfamListSerializer
+
+    
+    def get_queryset(self):
+        taxa_id = self.kwargs['taxa_id']
+        return Domain.objects.filter(taxa_id__taxa_id = taxa_id)
+
+
+
 
 

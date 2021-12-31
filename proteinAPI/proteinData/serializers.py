@@ -40,3 +40,18 @@ class ProteinListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organism
         fields = ['id', 'protein_id']
+
+class PfamListSerializer(serializers.ModelSerializer):
+    pfam_id = PfamSerializer()
+
+    class Meta:
+        model = Domain
+        fields = ['id', 'pfam_id']
+
+class CoverageSerializer(serializers.ModelSerializer):
+    domains = DomainSerializer(many = True)
+
+    class Meta:
+        model = Protein
+        fields = ['id', 'protein_id', 'sequence', 'taxonomy',
+                 'length', 'start']
