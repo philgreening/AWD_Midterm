@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.deletion import DO_NOTHING
+from django.db.models.deletion import CASCADE, DO_NOTHING
 
 #create model for sequencing table
 class Sequencing(models.Model):
@@ -23,7 +23,7 @@ class Organism(models.Model):
 
 class Protein(models.Model):
     protein_id = models.CharField(max_length=10, null=False, blank=False)
-    taxonomy = models.ForeignKey(Organism, null= False, blank= False, on_delete=models.DO_NOTHING)
+    taxonomy = models.ForeignKey(Organism, null= False, blank= False, on_delete=models.CASCADE)
     sequence = models.ForeignKey(Sequencing, null=True, blank= True, on_delete=models.DO_NOTHING)
     length = models.IntegerField(null=False, blank=False)
     
@@ -41,8 +41,8 @@ class PfamDescriptions(models.Model):
 
 class Domain(models.Model):
    # protein_id = models.CharField(max_length=10, null=False, blank=False)
-    protein_id = models.ForeignKey(Protein, null=False, blank= False, related_name='domains', on_delete=models.DO_NOTHING)
-    taxa_id = models.ForeignKey(Organism, null=False, blank= False, on_delete=DO_NOTHING)
+    protein_id = models.ForeignKey(Protein, null=False, blank= False, related_name='domains', on_delete=models.CASCADE)
+    taxa_id = models.ForeignKey(Organism, null=False, blank= False, on_delete=CASCADE)
     pfam_id = models.ForeignKey(PfamDescriptions, on_delete=models.DO_NOTHING)
     domain_id = models.CharField(max_length=256, null=False, blank=False)
     description = models.CharField(max_length=256, null=False, blank=False)

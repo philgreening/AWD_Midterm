@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.fields import SerializerMethodField
 from .models import *
 
 class SequencingSerializer(serializers.ModelSerializer):
@@ -48,10 +49,35 @@ class PfamListSerializer(serializers.ModelSerializer):
         model = Domain
         fields = ['id', 'pfam_id']
 
+# class CoverageSerializer(serializers.ModelSerializer):
+#    # domains = DomainSerializer(many = True)
+#     coverage = SerializerMethodField()
+
+#     def get_coverage_(self):
+#         start = Domain.objects.filter(domain__start = 'start')
+#         end = Domain.objects.filter(domain__end = 'end')
+#         length = Protein.object.filter(protein__length = 'length')
+#         sum = (start - end) / length
+#         return sum
+
+
+#     class Meta:
+#         model = Protein
+#         fields = ['coverage']
+
 class CoverageSerializer(serializers.ModelSerializer):
-    domains = DomainSerializer(many = True)
+   # domains = DomainSerializer(many = True)
+    coverage = SerializerMethodField()
+
+    def get_coverage(self, obj):
+        start = getattr(Domain, 'start')
+    # end = Domain.objects.get('end')
+    # length = Protein.objects.get('length')
+    # sum = (start - end) / length
+        print(start)
+        return start
+
 
     class Meta:
         model = Protein
-        fields = ['id', 'protein_id', 'sequence', 'taxonomy',
-                 'length', 'start']
+        fields = ['coverage']

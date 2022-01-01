@@ -80,6 +80,15 @@ class PfamList(mixins.RetrieveModelMixin,
         taxa_id = self.kwargs['taxa_id']
         return Domain.objects.filter(taxa_id__taxa_id = taxa_id)
 
+class CoverageDetails(mixins.RetrieveModelMixin,
+                      generics.GenericAPIView):
+    queryset = Protein.objects.all()
+    lookup_field = 'protein_id'
+    serializer_class = CoverageSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
 
 
 
