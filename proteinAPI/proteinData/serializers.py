@@ -1,45 +1,44 @@
 from rest_framework import serializers
-from rest_framework.fields import SerializerMethodField
 from .models import *
 
-class SequencingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Sequencing
-        fields = ['id', 'protein_id', 'sequence']
 
 class PfamSerializer(serializers.ModelSerializer):
     class Meta:
         model = PfamDescriptions
-        fields = ['id', 'domain_id', 'domain_description']
+        fields = ['domain_id', 'domain_description']
 
-class OrganismSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Organism
-        fields = ['protein_id', 'taxa_id', 'clade', 'genus', 'species']
 
 class DomainSerializer(serializers.ModelSerializer):
+    # Creates nested JSON, pfam details inside domains
     pfam_id = PfamSerializer()
 
     class Meta:
         model = Domain
-        fields = ['pfam_id','protein_id', 
-                  'domain_id', 'description',
-                  'start', 'end',
-                 ]
+        fields = ['pfam_id', 'description',
+                  'start', 'stop']
+                 
+class TaxonomySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Protein
+        fields = ['taxa_id', 'clade', 'genus', 'species']
+
 
 class ProteinSerializer(serializers.ModelSerializer):
+    #references sequence field
     sequence = serializers.SlugRelatedField(read_only = True, slug_field='sequence')
-    taxonomy = OrganismSerializer()
+
+    # Creates Nested JSON,  taxonomy and domain information inside protein details
+    taxonomy = TaxonomySerializer(source = '*')
     domains = DomainSerializer(many = True)
 
     class Meta:
         model = Protein
-        fields = ['id', 'protein_id', 'sequence', 'taxonomy',
-                 'length', 'domains']
+        fields = ['protein_id', 'sequence',
+                  'taxonomy', 'length', 'domains']
 
 class ProteinListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Organism
+        model = Protein
         fields = ['id', 'protein_id']
 
 class PfamListSerializer(serializers.ModelSerializer):
@@ -49,35 +48,21 @@ class PfamListSerializer(serializers.ModelSerializer):
         model = Domain
         fields = ['id', 'pfam_id']
 
-# class CoverageSerializer(serializers.ModelSerializer):
-#    # domains = DomainSerializer(many = True)
-#     coverage = SerializerMethodField()
-
-#     def get_coverage_(self):
-#         start = Domain.objects.filter(domain__start = 'start')
-#         end = Domain.objects.filter(domain__end = 'end')
-#         length = Protein.object.filter(protein__length = 'length')
-#         sum = (start - end) / length
-#         return sum
-
-
-#     class Meta:
-#         model = Protein
-#         fields = ['coverage']
 
 class CoverageSerializer(serializers.ModelSerializer):
-   # domains = DomainSerializer(many = True)
-    coverage = SerializerMethodField()
-
-    def get_coverage(self, obj):
-        start = getattr(Domain, 'start')
-    # end = Domain.objects.get('end')
-    # length = Protein.objects.get('length')
-    # sum = (start - end) / length
-        print(start)
-        return start
-
+    # creates custom coverage field and call get_coverage method
+    coverage = serializers.SerializerMethodField('get_coverage')
 
     class Meta:
-        model = Protein
+        model = Domain
         fields = ['coverage']
+
+    # calculates and returns domain coverage 
+    def get_coverage(self, obj):
+        length = obj.protein_id.length
+        start = obj.start
+        stop = obj.stop
+        coverage = (start-stop)/length
+        return coverage
+    
+
