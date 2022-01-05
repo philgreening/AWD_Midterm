@@ -4,6 +4,8 @@ from django.conf import settings
 from django.core.files import File
 from random import randint
 
+from factory.base import Factory
+
 from .models import *
 
 # create fixtures for sequencing model
@@ -28,8 +30,8 @@ class ProteinFactory(factory.django.DjangoModelFactory):
     sequence = factory.SubFactory(SequencingFactory)
     taxa_id = '12345'
     clade = 'E'
-    genus = 'Homo'
-    species = 'sapien'
+    genus = factory.Faker('sentence', nb_words = 1)
+    species = factory.Faker('sentence', nb_words = 1)
     length =  randint(0,4000)
 
     class Meta:
@@ -41,7 +43,7 @@ class DomainFactory(factory.django.DjangoModelFactory):
     taxa_id = factory.SubFactory(ProteinFactory)
     pfam_id = factory.SubFactory(PfamDescriptionFactory)
     domain_id = 'PF12345'
-    description = 'Peptidase C13 legumain'
+    description = factory.Faker('sentence', nb_words = 3)
     start = randint(1, 1000)
     stop = start+randint(1, 1000)
 
