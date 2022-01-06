@@ -11,7 +11,10 @@ from .model_factories import *
 from .models import *
 from .serializers import *
 
+#***************************************
 #***************API TESTS***************
+#***************************************
+
 
 # tests /api/protein endpoint
 class ProteinTest(APITestCase):
@@ -82,13 +85,16 @@ class PfamTest(APITestCase):
         response = self.client.get(self.good_url, format='json')
         response.render()
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
-        self.assertTrue('domain_description' in data)
 
-    
     def test_PfamDetailReturnFailOnBadAttribute(self):
         response = self.client.get(self.bad_url, format='json')
         self.assertEqual(response.status_code, 404)
+
+    def test_PfamDetailCheckFieldPresent(self):
+        response = self.client.get(self.good_url, format='json')
+        data = json.loads(response.content)
+        self.assertTrue('domain_description' in data)
+
 
 # tests /api/proteins endpoint
 class ProteinsTest(APITestCase):
@@ -122,9 +128,6 @@ class ProteinsTest(APITestCase):
         response = self.client.get(self.good_url, format='json')
         response.render()
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
-        for protein in data:
-            self.assertTrue('protein_id' in protein)
     
     def test_ProteinsListReturnFailOnBadAttribute(self):
         response = self.client.get(self.bad_url, format='json')
@@ -134,6 +137,12 @@ class ProteinsTest(APITestCase):
         response = self.client.get(self.good_url, format='json')
         data = json.loads(response.content)
         self.assertEqual(len(data), 3)
+    
+    def test_ProteinsListCheckFieldPresent(self):
+        response = self.client.get(self.good_url, format='json')
+        data = json.loads(response.content)
+        for protein in data:
+            self.assertTrue('protein_id' in protein)
 
 # tests /api/pfams endpoint
 class DomainsTest(APITestCase):
@@ -167,9 +176,6 @@ class DomainsTest(APITestCase):
         response = self.client.get(self.good_url, format='json')
         response.render()
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
-        for domain in data:
-            self.assertTrue('pfam_id' in domain)
     
     def test_DomainListReturnFailOnBadAttribute(self):
         response = self.client.get(self.bad_url, format='json')
@@ -179,6 +185,12 @@ class DomainsTest(APITestCase):
         response = self.client.get(self.good_url, format='json')
         data = json.loads(response.content)
         self.assertEqual(len(data), 3)
+
+    def test_DomainListCheckFieldPresent(self):
+        response = self.client.get(self.good_url, format='json')
+        data = json.loads(response.content)
+        for domain in data:
+            self.assertTrue('pfam_id' in domain)
 
 # tests /api/coverage endpoint
 class CoverageTest(APITestCase):
@@ -208,15 +220,20 @@ class CoverageTest(APITestCase):
         response = self.client.get(self.good_url, format='json')
         response.render()
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
-        for coverage in data:
-            self.assertTrue('coverage' in coverage)
     
     def test_CoverageListReturnFailOnBadAttribute(self):
         response = self.client.get(self.bad_url, format='json')
         self.assertEqual(response.status_code, 404)
 
+    def test_CoverageCheckFieldPresent(self):
+        response = self.client.get(self.good_url, format='json')
+        data = json.loads(response.content)
+        for coverage in data:
+            self.assertTrue('coverage' in coverage)
+
+#**********************************************
 #***************SERIALIZER TESTS***************
+#**********************************************
 
 class ProteinSerializerTest(APITestCase):
     protein = None

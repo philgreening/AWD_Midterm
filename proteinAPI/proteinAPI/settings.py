@@ -46,13 +46,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-# Rest framework permissions
-# REST_FRAMEWORK = {
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework_permissions.AllowAny',
-#     ]
-# }
-
 MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',

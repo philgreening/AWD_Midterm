@@ -3,8 +3,12 @@ import sys
 import django
 import csv
 from collections import defaultdict
+from pathlib import Path
 
-sys.path.append('/home/philgreening/AWD_Midterm/proteinAPI')
+
+#sys.path.append('/home/philgreening/AWD_Midterm/proteinAPI')
+sys.path.append('../../AWD_Midterm/proteinAPI')
+
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE',
                       'proteinAPI.settings')
@@ -12,9 +16,12 @@ django.setup()
 
 from proteinData.models import *
 
-sequences_data_file =  '/home/philgreening/AWD_Midterm/proteinAPI/data/assignment_data_sequences.csv'
-pfam_desc_data_file = '/home/philgreening/AWD_Midterm/proteinAPI/data/pfam_descriptions.csv'
-protein_dataset_file = '/home/philgreening/AWD_Midterm/proteinAPI/data/assignment_data_set.csv'
+# sequences_data_file =  '/home/philgreening/AWD_Midterm/proteinAPI/data/assignment_data_sequences.csv'
+sequences_data_file =  Path(__file__).parent / '../../../AWD_Midterm/proteinAPI/data/assignment_data_sequences.csv'
+#pfam_desc_data_file = '/home/philgreening/AWD_Midterm/proteinAPI/data/pfam_descriptions.csv'
+pfam_desc_data_file = Path(__file__).parent / '../../../AWD_Midterm/proteinAPI/data/pfam_descriptions.csv'
+#protein_dataset_file = '../../../home/philgreening/AWD_Midterm/proteinAPI/data/assignment_data_set.csv'
+protein_dataset_file = Path(__file__).parent / '../../../AWD_Midterm/proteinAPI/data/assignment_data_set.csv'
 
 # variables to hold data
 sequencing = set() 
@@ -101,6 +108,5 @@ for protein_id, data in proteins.items():
                                    description = data[5],
                                    start = data[7],
                                    stop = data[8])
-                                  # length = protein_row[protein_id])
        row.save()
        domain_row[protein_id] = row

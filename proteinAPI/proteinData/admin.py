@@ -10,7 +10,7 @@ class SequencingAdmin(admin.ModelAdmin):
     list_display = ['protein_id', 'sequence']
 
 class PfamDescriptionsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'domain_description']
+    list_display = ['domain_id', 'domain_description']
 
 class DomainAdmin(admin.ModelAdmin):
     list_display = ['protein_id', 'taxa_id', 'pfam_id',

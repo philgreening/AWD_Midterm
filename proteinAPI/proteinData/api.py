@@ -13,10 +13,10 @@ class ProteinDetails(mixins.RetrieveModelMixin,
     lookup_field = 'protein_id'
     serializer_class = ProteinSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-    
     def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
 #  looks up domain id and returns pfam details in JSON format

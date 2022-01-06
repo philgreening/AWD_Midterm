@@ -42,7 +42,7 @@ class Domain(models.Model):
     #length = models.ForeignKey(Protein, null=False, blank=False, related_name= 'protein_length', on_delete=models.CASCADE )
 
     def __str__(self):
-        return self.protein_id
+        return self.domain_id
 
     
 
