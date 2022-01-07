@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.relations import PrimaryKeyRelatedField
 from .models import *
 
 
@@ -29,7 +30,7 @@ class ProteinSerializer(serializers.ModelSerializer):
 
     # Creates Nested JSON,  taxonomy and domain information inside protein details
     taxonomy = TaxonomySerializer(source = '*')
-    domains = DomainSerializer(many = True)
+    domains = DomainSerializer(many=True)
 
     class Meta:
         model = Protein
@@ -62,7 +63,7 @@ class CoverageSerializer(serializers.ModelSerializer):
         length = obj.protein_id.length
         start = obj.start
         stop = obj.stop
-        coverage = (start-stop)/length
+        coverage = (stop-start)/length
         return coverage
     
 
