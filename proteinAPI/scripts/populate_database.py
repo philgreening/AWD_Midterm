@@ -40,7 +40,7 @@ with open(pfam_desc_data_file) as csv_file:
        for row in csv_reader:
               pfam_descriptions.add((row[0], row[1]))
 
-# Reads pfam descriptions csv file
+# Reads protein set csv file
 with open(protein_dataset_file) as csv_file:
        csv_reader = csv.reader(csv_file, delimiter=',')
        lines = 0

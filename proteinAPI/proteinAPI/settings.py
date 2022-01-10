@@ -35,6 +35,7 @@ INTERNAL_IPS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'django_extensions',
     'debug_toolbar',
     'rest_framework',
     'proteinData.apps.proteinDataConfig',

@@ -39,7 +39,6 @@ class Domain(models.Model):
     description = models.CharField(max_length=256, null=False, blank=False)
     start = models.IntegerField(null=False, blank=False)
     stop = models.IntegerField(null=False, blank=False)
-    #length = models.ForeignKey(Protein, null=False, blank=False, related_name= 'protein_length', on_delete=models.CASCADE )
 
     def __str__(self):
         return self.domain_id
